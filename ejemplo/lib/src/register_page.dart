@@ -9,20 +9,18 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-  String? _gender = 'Femenino';
+  String _gender = 'Femenino'; // Estado del género
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 🎨 Fondo lila claro (lavanda suave)
       backgroundColor: const Color(0xFFF9F6FF),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // 🔸 Encabezado con imagen y título
+            // Encabezado con imagen y título
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -59,7 +57,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 30),
 
-            // 🔸 Formulario
+            // Formulario
             Form(
               key: _formKey,
               child: Column(
@@ -121,34 +119,53 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   const SizedBox(height: 15),
 
-                  Row(
+                  // 🔹 Sección de género actualizada para evitar deprecated
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: RadioListTile<String>(
-                          title: const Text("Femenino"),
-                          value: "Femenino",
-                          groupValue: _gender,
-                          onChanged: (value) {
-                            setState(() {
-                              _gender = value;
-                            });
-                          },
+                      const Text(
+                        'Sexo:',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Expanded(
-                        child: RadioListTile<String>(
-                          title: const Text("Masculino"),
-                          value: "Masculino",
-                          groupValue: _gender,
-                          onChanged: (value) {
-                            setState(() {
-                              _gender = value;
-                            });
-                          },
-                        ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Radio<String>(
+                                  value: 'Femenino',
+                                  groupValue: _gender,
+                                  onChanged: (value) {
+                                    setState(() => _gender = value!);
+                                  },
+                                ),
+                                const Text('Femenino'),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Radio<String>(
+                                  value: 'Masculino',
+                                  groupValue: _gender,
+                                  onChanged: (value) {
+                                    setState(() => _gender = value!);
+                                  },
+                                ),
+                                const Text('Masculino'),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 20),
 
                   Row(

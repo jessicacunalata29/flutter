@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_page.dart';
+import 'inicio.dart'; // Importa tu pantalla de inicio
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -15,6 +16,13 @@ class _HomepageState extends State<Homepage> {
   final _passwordController = TextEditingController();
 
   @override
+  void dispose() {
+    _userController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
@@ -24,22 +32,20 @@ class _HomepageState extends State<Homepage> {
         height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFFFFA726), // Naranja
-              Color(0xFFFF7043), // Coral suave
-            ],
+            colors: [Color(0xFFFFA726), Color(0xFFFF7043)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Center(
+        child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const SizedBox(height: 30), // 👈 más pequeño aún
-              // Imagen circular
+              const SizedBox(height: 60),
+
+              // Logo circular
               Container(
-                height: 150, // 👈 un poco más pequeña para que quepa todo
+                height: 150,
                 width: 150,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -57,7 +63,8 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+
+              const SizedBox(height: 15),
 
               const Text(
                 "Mi Diario",
@@ -75,9 +82,9 @@ class _HomepageState extends State<Homepage> {
                 ),
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 30),
 
-              // Contenedor blanco con el formulario
+              // Contenedor blanco del formulario
               Container(
                 width: size.width * 0.9,
                 padding: const EdgeInsets.symmetric(
@@ -164,11 +171,25 @@ class _HomepageState extends State<Homepage> {
                           elevation: 4,
                         ),
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Iniciando sesión..."),
-                            ),
-                          );
+                          // Validación simple antes de ir a Inicio
+                          if (_userController.text.isNotEmpty &&
+                              _passwordController.text.isNotEmpty) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const Inicio(), // 👈 Aquí el cambio
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "Por favor ingresa usuario y contraseña",
+                                ),
+                              ),
+                            );
+                          }
                         },
                         child: const Text(
                           "ENTRAR",
@@ -209,6 +230,7 @@ class _HomepageState extends State<Homepage> {
                   ],
                 ),
               ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
