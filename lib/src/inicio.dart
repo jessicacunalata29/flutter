@@ -1,6 +1,11 @@
 import 'package:ejemplo/main.dart';
 import 'package:flutter/material.dart';
 import 'app.dart';
+import 'pantallas/favoritos.dart';
+import 'pantallas/configuracion.dart';
+import 'pantallas/ayuda.dart';
+import 'pantallas/acerca_de.dart';
+import 'pantallas/home_screen.dart';
 
 class Inicio extends StatelessWidget {
   const Inicio({super.key});
@@ -200,9 +205,30 @@ class MenuLateral extends StatelessWidget {
       ),
       onTap: () {
         Navigator.pop(context);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Abriste: $texto")));
+        Widget destino;
+
+        switch (texto) {
+          case "Inicio":
+            destino =
+                const HomeScreen(); // <-- pantalla secundaria, no el login
+            break;
+          case "Favoritos":
+            destino = const Favoritos();
+            break;
+          case "Configuración":
+            destino = const Configuracion();
+            break;
+          case "Ayuda":
+            destino = const Ayuda();
+            break;
+          case "Acerca de":
+            destino = const Acercade();
+            break;
+          default:
+            destino = const Inicio();
+        }
+
+        Navigator.push(context, MaterialPageRoute(builder: (_) => destino));
       },
     );
   }

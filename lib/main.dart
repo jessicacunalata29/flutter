@@ -12,9 +12,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'App de Diario Personal',
-      home: const Homepage(), // 👈 Tu pantalla de login
-
-      routes: {'/inicio': (context) => const Inicio()},
+      // Inicialmente login
+      home: const Homepage(),
+      routes: {
+        '/inicio': (context) => const Inicio(), // Pantalla principal
+      },
     );
   }
 }
