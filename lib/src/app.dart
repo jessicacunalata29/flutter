@@ -1,6 +1,7 @@
+import 'package:ejemplo/src/pantallas/recuperar_contrasena_page.dart';
 import 'package:flutter/material.dart';
 import 'register_page.dart';
-import 'inicio.dart'; // Importa tu pantalla de inicio
+import 'inicio.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -171,14 +172,12 @@ class _HomepageState extends State<Homepage> {
                           elevation: 4,
                         ),
                         onPressed: () {
-                          // Validación simple antes de ir a Inicio
                           if (_userController.text.isNotEmpty &&
                               _passwordController.text.isNotEmpty) {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    const Inicio(), // 👈 Aquí el cambio
+                                builder: (context) => const Inicio(),
                               ),
                             );
                           } else {
@@ -226,6 +225,29 @@ class _HomepageState extends State<Homepage> {
                           ),
                         ),
                       ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // ✅ NUEVO: Recuperar contraseña
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const RecuperarContrasenaPage(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "¿Olvidaste tu contraseña?",
+                        style: TextStyle(
+                          color: Color(0xFF5D4037),
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
                     ),
                   ],
                 ),

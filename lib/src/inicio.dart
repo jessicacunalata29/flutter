@@ -1,14 +1,92 @@
+import 'dart:async';
 import 'package:ejemplo/main.dart';
 import 'package:flutter/material.dart';
-import 'app.dart';
+import '../src/app.dart';
 import 'pantallas/favoritos.dart';
 import 'pantallas/configuracion.dart';
 import 'pantallas/ayuda.dart';
 import 'pantallas/acerca_de.dart';
 import 'pantallas/home_screen.dart';
 
-class Inicio extends StatelessWidget {
+class Inicio extends StatefulWidget {
   const Inicio({super.key});
+
+  @override
+  State<Inicio> createState() => _InicioState();
+}
+
+class _InicioState extends State<Inicio> with TickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fade;
+  late Animation<Offset> _slide;
+
+  // 🎨 Fondo animado
+  List<Color> colores = [
+    const Color(0xFF0D0C2B),
+    const Color(0xFF3C1361),
+    const Color(0xFFFF6666),
+  ];
+
+  int indice = 0;
+  Timer? _timer;
+
+  // 🌙 Animaciones de flotación y escala (efecto "respiración")
+  late AnimationController _floatController;
+  late Animation<double> _floatAnimation;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ✨ Animación de entrada (fade + slide)
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+
+    _fade = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _slide = Tween<Offset>(
+      begin: const Offset(0, 0.15),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _controller.forward();
+
+    // 🌈 Cambia el fondo gradualmente cada pocos segundos
+    _timer = Timer.periodic(const Duration(seconds: 6), (timer) {
+      setState(() {
+        colores.shuffle();
+      });
+    });
+
+    // 🌬️ Animación de flotación
+    _floatController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
+
+    _floatAnimation = Tween<double>(begin: 0, end: 10).animate(
+      CurvedAnimation(parent: _floatController, curve: Curves.easeInOut),
+    );
+
+    // 💗 Animación de escala suave (efecto respiración)
+    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.05).animate(
+      CurvedAnimation(parent: _floatController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _floatController.dispose();
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,102 +94,79 @@ class Inicio extends StatelessWidget {
       drawer: const MenuLateral(),
       appBar: AppBar(
         title: const Text("Mi Diario Personal"),
-        backgroundColor: const Color(0xFFFF6666), // 🌺 color coral cálido
+        backgroundColor: const Color(0xFFFF6666),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
+      body: AnimatedContainer(
+        duration: const Duration(seconds: 3),
+        curve: Curves.easeInOut,
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFF0D0C2B), // azul oscuro espacial
-              Color(0xFF3C1361), // violeta profundo
-              Color(0xFFFF6666), // coral suave
-            ],
+            colors: colores,
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // 🌙 Ícono animado
-                AnimatedContainer(
-                  duration: const Duration(seconds: 2),
-                  curve: Curves.easeInOut,
-                  height: 120,
-                  width: 120,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.self_improvement,
-                    color: Colors.white,
-                    size: 70,
-                  ),
-                ),
-                const SizedBox(height: 30),
-
-                // ✨ Mensaje principal
-                const Text(
-                  "Bienvenido a tu espacio de calma 🌙",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    height: 1.3,
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // 💭 Frase inspiradora
-                const Text(
-                  "Escribe tus pensamientos, reflexiona sobre tu día y redescubre tu paz interior.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 16,
-                    height: 1.4,
-                  ),
-                ),
-                const SizedBox(height: 40),
-
-                // 🌸 Botón principal
-                ElevatedButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "🪷 Pronto podrás escribir un nuevo apunte 🪷",
+        child: FadeTransition(
+          opacity: _fade,
+          child: SlideTransition(
+            position: _slide,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AnimatedBuilder(
+                      animation: _floatController,
+                      builder: (context, child) {
+                        return Transform.translate(
+                          offset: Offset(0, -_floatAnimation.value),
+                          child: Transform.scale(
+                            scale: _scaleAnimation.value,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(seconds: 2),
+                        curve: Curves.easeInOut,
+                        height: 120,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          shape: BoxShape.circle,
                         ),
-                        duration: Duration(seconds: 2),
+                        child: const Icon(
+                          Icons.self_improvement,
+                          color: Colors.white,
+                          size: 70,
+                        ),
                       ),
-                    );
-                  },
-                  icon: const Icon(Icons.edit),
-                  label: const Text("Escribir un nuevo pensamiento"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFFFF6666),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 28,
-                      vertical: 14,
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                    const SizedBox(height: 30),
+                    const Text(
+                      "Bienvenido a tu espacio de calma 🌙",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        height: 1.3,
+                      ),
                     ),
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 20),
+                    const Text(
+                      "Escribe tus pensamientos, reflexiona sobre tu día y redescubre tu paz interior.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
+                        height: 1.4,
+                      ),
                     ),
-                    elevation: 6,
-                    shadowColor: Colors.pinkAccent,
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -131,9 +186,7 @@ class MenuLateral extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Color(0xFFFF6666),
-            ), // 🌺 color coral
+            decoration: const BoxDecoration(color: Color(0xFFFF6666)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
@@ -183,7 +236,7 @@ class MenuLateral extends StatelessWidget {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (_) => const MyApp()),
-                (Route<dynamic> route) => false,
+                (route) => false,
               );
             },
           ),
@@ -209,8 +262,7 @@ class MenuLateral extends StatelessWidget {
 
         switch (texto) {
           case "Inicio":
-            destino =
-                const HomeScreen(); // <-- pantalla secundaria, no el login
+            destino = const HomeScreen();
             break;
           case "Favoritos":
             destino = const Favoritos();

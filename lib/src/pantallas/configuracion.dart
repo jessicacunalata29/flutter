@@ -1,71 +1,117 @@
+import 'package:ejemplo/src/notificaciones_screen.dart';
+import 'package:ejemplo/src/privacidad_screen.dart';
+import 'package:ejemplo/src/tema_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../state/app_state.dart';
 
 class Configuracion extends StatelessWidget {
   const Configuracion({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Configuración"),
-        backgroundColor: const Color(0xFF3C1361),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF0D0C2B), Color(0xFF3C1361)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            const SizedBox(height: 20),
-            _opcion(context, Icons.palette, "Tema"),
-            _opcion(context, Icons.lock, "Privacidad"),
-            _opcion(context, Icons.notifications, "Notificaciones"),
-          ],
-        ),
-      ),
-    );
-  }
+    final appState = Provider.of<AppState>(context);
 
-  Widget _opcion(BuildContext context, IconData icon, String texto) {
-    return GestureDetector(
-      onTap: () {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("🔧 $texto")));
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFFF6666), Color(0xFFFFB6C1)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return Scaffold(
+      backgroundColor: appState.isDarkTheme
+          ? Colors.grey[900]
+          : Colors.grey[200],
+      appBar: AppBar(
+        title: Text(
+          'Configuración',
+          style: TextStyle(
+            color: appState.isDarkTheme ? Colors.white : Colors.black87,
           ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.pinkAccent,
-              blurRadius: 8,
-              offset: Offset(2, 4),
-            ),
-          ],
         ),
-        child: Row(
+        backgroundColor: appState.isDarkTheme
+            ? Colors.purple[700]
+            : Colors.purple[200],
+        iconTheme: IconThemeData(
+          color: appState.isDarkTheme ? Colors.white : Colors.black87,
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           children: [
-            Icon(icon, size: 30, color: Colors.white),
-            const SizedBox(width: 20),
-            Text(
-              texto,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+            // Tema
+            Card(
+              color: appState.isDarkTheme
+                  ? Colors.purple[300]
+                  : Colors.pink[100],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                leading: Icon(Icons.palette, color: Colors.black87),
+                title: const Text(
+                  'Tema',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                trailing: Switch(
+                  value: appState.isDarkTheme,
+                  onChanged: (value) => appState.toggleTheme(),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const TemaScreen()),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Privacidad
+            Card(
+              color: appState.isDarkTheme
+                  ? Colors.blueGrey[300]
+                  : Colors.blue[100],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                leading: Icon(Icons.lock, color: Colors.black87),
+                title: const Text(
+                  'Privacidad',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PrivacidadScreen()),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Notificaciones
+            Card(
+              color: appState.isDarkTheme
+                  ? Colors.orange[300]
+                  : Colors.yellow[100],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                leading: Icon(Icons.notifications, color: Colors.black87),
+                title: const Text(
+                  'Notificaciones',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                trailing: Switch(
+                  value: appState.notificationsEnabled,
+                  onChanged: (value) => appState.toggleNotifications(),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const NotificacionesScreen(),
+                    ),
+                  );
+                },
               ),
             ),
           ],
