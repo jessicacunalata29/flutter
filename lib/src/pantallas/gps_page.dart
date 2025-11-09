@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QrPage extends StatefulWidget {
   const QrPage({super.key});
@@ -9,31 +9,46 @@ class QrPage extends StatefulWidget {
 }
 
 class _QrPageState extends State<QrPage> {
-  final qrKey = GlobalKey(debugLabel: "QR");
-  QRViewController? controller;
+  final MobileScannerController controller = MobileScannerController();
   String resultado = "Escanea un QR para obtener frase ✨";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Escanear QR")),
+      appBar: AppBar(
+        title: const Text("Escanear QR"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.flash_on),
+            onPressed: () => controller.toggleTorch(),
+          ),
+          IconButton(
+            icon: const Icon(Icons.cameraswitch),
+            onPressed: () => controller.switchCamera(),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
             flex: 3,
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: (c) {
-                controller = c;
-                c.scannedDataStream.listen((scan) {
-                  setState(() => resultado = scan.code ?? "");
+            child: MobileScanner(
+              controller: controller,
+              onDetect: (capture) {
+                final codigo = capture.barcodes.first.rawValue;
+                setState(() {
+                  resultado = codigo ?? "QR no válido";
                 });
               },
             ),
           ),
           Expanded(
             child: Center(
-              child: Text(resultado, style: const TextStyle(fontSize: 18)),
+              child: Text(
+                resultado,
+                style: const TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
         ],
@@ -43,7 +58,7 @@ class _QrPageState extends State<QrPage> {
 
   @override
   void dispose() {
-    controller?.dispose();
+    controller.dispose();
     super.dispose();
   }
 }

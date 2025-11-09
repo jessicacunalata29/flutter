@@ -1,33 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QRPage extends StatefulWidget {
-  const QRPage({super.key}); // ✅ Constructor con key
+  const QRPage({super.key});
 
   @override
   State<QRPage> createState() => _QRPageState();
 }
 
 class _QRPageState extends State<QRPage> {
-  final qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
+  MobileScannerController controller = MobileScannerController();
   String? qrData = "Esperando escaneo...";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Escanear QR")),
+      appBar: AppBar(
+        title: const Text("Escanear QR"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.flash_on),
+            onPressed: () => controller.toggleTorch(),
+          ),
+          IconButton(
+            icon: const Icon(Icons.cameraswitch),
+            onPressed: () => controller.switchCamera(),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
             flex: 5,
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: (ctrl) {
-                controller = ctrl;
-                ctrl.scannedDataStream.listen((scan) {
-                  setState(() => qrData = scan.code);
-                });
+            child: MobileScanner(
+              controller: controller,
+              onDetect: (capture) {
+                final barcodes = capture.barcodes;
+                for (final barcode in barcodes) {
+                  setState(() {
+                    qrData = barcode.rawValue ?? "No detectado";
+                  });
+                }
               },
             ),
           ),
@@ -46,7 +59,7 @@ class _QRPageState extends State<QRPage> {
 
   @override
   void dispose() {
-    controller?.dispose(); // ✅ liberar la cámara
+    controller.dispose(); // ✅ liberar cámara
     super.dispose();
   }
 }

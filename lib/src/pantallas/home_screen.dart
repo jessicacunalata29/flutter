@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ejemplo/src/pantallas/camara_page.dart';
 import 'package:ejemplo/src/pantallas/gps_page.dart';
 import 'package:ejemplo/src/pantallas/qr_page.dart';
+import 'package:ejemplo/src/pantallas/qr_frases_page.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -42,7 +43,7 @@ class HomeScreen extends StatelessWidget {
           _tarjetaAccion(
             context,
             icon: Icons.edit,
-            texto: "Nuevo pensamiento",
+            texto: "Nuevo pensamiento ✍️",
             colores: [Color(0xFFFF6666), Color(0xFFFFB6C1)],
             onTap: () {},
           ),
@@ -75,9 +76,22 @@ class HomeScreen extends StatelessWidget {
 
           _tarjetaAccion(
             context,
-            icon: Icons.qr_code_scanner,
-            texto: "Escanear frase motivacional QR ✨",
+            icon: Icons.favorite,
+            texto: "Frases motivacionales + QR ✨",
             colores: [Color(0xFFFF6666), Color(0xFFFFB6C1)],
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const FrasesQRPage()),
+              );
+            },
+          ),
+
+          _tarjetaAccion(
+            context,
+            icon: Icons.qr_code_scanner,
+            texto: "Escanear QR inspirador 🧠",
+            colores: [Color(0xFF6D1B7B), Color(0xFF3C1361)],
             onTap: () {
               Navigator.push(
                 context,
