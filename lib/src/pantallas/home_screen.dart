@@ -69,7 +69,7 @@ class HomeScreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const QrPage()),
+                MaterialPageRoute(builder: (_) => const GpsPage()),
               );
             },
           ),
