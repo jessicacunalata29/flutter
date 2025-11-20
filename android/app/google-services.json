@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "712670080424",
+    "project_id": "diario-personal-af90c",
+    "storage_bucket": "diario-personal-af90c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712670080424:android:df308f58e863b18d9d819d",
+        "android_client_info": {
+          "package_name": "com.example.ejemplo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcet1ftOV7ykQSnigoODYbuo0gCYUtQhI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
