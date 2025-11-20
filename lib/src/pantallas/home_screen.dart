@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Inicio"),
-        backgroundColor: Color(0xFF3C1361),
+        backgroundColor: const Color(0xFF3C1361),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -44,7 +44,7 @@ class HomeScreen extends StatelessWidget {
             context,
             icon: Icons.edit,
             texto: "Nuevo pensamiento ✍️",
-            colores: [Color(0xFFFF6666), Color(0xFFFFB6C1)],
+            colores: const [Color(0xFFFF6666), Color(0xFFFFB6C1)],
             onTap: () {},
           ),
 
@@ -52,7 +52,7 @@ class HomeScreen extends StatelessWidget {
             context,
             icon: Icons.photo_camera,
             texto: "Guardar recuerdo con foto 📸",
-            colores: [Color(0xFF6D1B7B), Color(0xFF3C1361)],
+            colores: const [Color(0xFF6D1B7B), Color(0xFF3C1361)],
             onTap: () {
               Navigator.push(
                 context,
@@ -65,7 +65,7 @@ class HomeScreen extends StatelessWidget {
             context,
             icon: Icons.location_on,
             texto: "Registrar ubicación del día 📍",
-            colores: [Color(0xFF0D0C2B), Color(0xFF3C1361)],
+            colores: const [Color(0xFF0D0C2B), Color(0xFF3C1361)],
             onTap: () {
               Navigator.push(
                 context,
@@ -78,7 +78,7 @@ class HomeScreen extends StatelessWidget {
             context,
             icon: Icons.favorite,
             texto: "Frases motivacionales + QR ✨",
-            colores: [Color(0xFFFF6666), Color(0xFFFFB6C1)],
+            colores: const [Color(0xFFFF6666), Color(0xFFFFB6C1)],
             onTap: () {
               Navigator.push(
                 context,
@@ -91,7 +91,7 @@ class HomeScreen extends StatelessWidget {
             context,
             icon: Icons.qr_code_scanner,
             texto: "Escanear QR inspirador 🧠",
-            colores: [Color(0xFF6D1B7B), Color(0xFF3C1361)],
+            colores: const [Color(0xFF6D1B7B), Color(0xFF3C1361)],
             onTap: () {
               Navigator.push(
                 context,
@@ -102,6 +102,18 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       backgroundColor: const Color(0xFF0D0C2B),
+
+      // 🔹 Botón de atrás en la parte inferior
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context); // vuelve a la pantalla anterior
+          }
+        },
+        backgroundColor: const Color(0xFF3C1361),
+        child: const Icon(Icons.arrow_back),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -128,7 +140,7 @@ class HomeScreen extends StatelessWidget {
             Expanded(
               child: Text(
                 texto,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
